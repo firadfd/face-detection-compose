@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">كشف الوجه</string>
+    <string name="welcome">مرحباً بك</string>
+    <string name="login_continue">سجل الدخول للمتابعة</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="password">كلمة المرور</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="home">الرئيسية</string>
+    <string name="demo">عرض</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="settings">الإعدادات</string>
+    <string name="language">اللغة</string>
+    <string name="theme">المظهر</string>
+    <string name="light">فاتح</string>
+    <string name="dark">داكن</string>
+    <string name="system">تلقائي</string>
+</resources>

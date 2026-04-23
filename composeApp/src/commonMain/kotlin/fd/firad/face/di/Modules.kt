@@ -1,10 +1,13 @@
 package fd.firad.face.di
 
+import com.russhwolf.settings.Settings
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
+
+import fd.firad.face.ui.theme.ThemeViewModel
 
 val networkModule = module {
     single {
@@ -21,7 +24,10 @@ val networkModule = module {
 }
 
 val appModule = module {
-    // Add your app-specific dependencies here
+    single { Settings() }
+    single { ThemeViewModel(get()) }
 }
 
-val sharedModule = listOf(networkModule, appModule)
+expect val platformModule: org.koin.core.module.Module
+
+val sharedModule = listOf(networkModule, appModule, platformModule)

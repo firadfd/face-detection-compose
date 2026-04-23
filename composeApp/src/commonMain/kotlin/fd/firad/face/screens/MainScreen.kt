@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
-import com.mmk.kmpnotifier.notification.NotifierManager
+//import com.mmk.kmpnotifier.notification.NotifierManager
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.preat.peekaboo.image.picker.toImageBitmap
@@ -32,6 +32,7 @@ import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import dev.icerock.moko.permissions.gallery.GALLERY
 import dev.icerock.moko.permissions.notifications.REMOTE_NOTIFICATION
+import fd.firad.face.LocalNotifier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -49,6 +50,7 @@ data class Post(val userId: Int, val id: Int, val title: String, val body: Strin
 fun MainScreen(onNavigateToNext: () -> Unit) {
     val scope = rememberCoroutineScope()
     val client = koinInject<HttpClient>()
+    val localNotifier = koinInject<LocalNotifier>()
     var ktorResult by remember { mutableStateOf("Click to fetch") }
     var currentTime by remember { mutableStateOf("") }
     
@@ -144,12 +146,18 @@ fun MainScreen(onNavigateToNext: () -> Unit) {
 
         Divider()
 
-        // KMP Notification
+        // Local Notification (Firebase-free)
         Button(onClick = {
-            NotifierManager.getPermissionUtil().askNotificationPermission()
-            NotifierManager.getLocalNotifier().notify("KMP Notifier", "This is a local notification!")
+            scope.launch {
+                try {
+                    controller.providePermission(Permission.REMOTE_NOTIFICATION)
+                    localNotifier.notify("Face Detection", "This is a local notification without Firebase!")
+                } catch (e: Exception) {
+                    println("Permission Error: ${e.message}")
+                }
+            }
         }) {
-            Text("Send Notification (KMP Notifier)")
+            Text("Send Local Notification")
         }
 
         Divider()
