@@ -63,7 +63,7 @@ kotlin {
             implementation(libs.moko.permissions.gallery)
 
             // Notifications
-            implementation(libs.kmp.notification)
+//            implementation(libs.kmp.notification)
 
             // Serialization & DateTime
             implementation(libs.kotlinx.serialization.json)
@@ -71,6 +71,10 @@ kotlin {
 
             // Image Picker
             implementation(libs.peekaboo.image.picker)
+
+            // Settings
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.coroutines)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
