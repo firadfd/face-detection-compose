@@ -1,4 +1,4 @@
-package fd.firad.face.ui.theme
+package fd.firad.face.core.theme
 
 import androidx.lifecycle.ViewModel
 import com.russhwolf.settings.Settings
@@ -15,8 +15,12 @@ class ThemeViewModel(private val settings: Settings) : ViewModel() {
 
     init {
         val savedTheme = settings.getString("theme_mode", AppThemeMode.SYSTEM.name)
-        _themeMode.value = AppThemeMode.valueOf(savedTheme)
-        
+        _themeMode.value = try {
+            AppThemeMode.valueOf(savedTheme)
+        } catch (e: Exception) {
+            AppThemeMode.SYSTEM
+        }
+
         _language.value = settings.getString("app_language", "en")
     }
 

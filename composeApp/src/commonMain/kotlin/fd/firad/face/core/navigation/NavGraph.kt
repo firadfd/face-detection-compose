@@ -1,12 +1,12 @@
-package fd.firad.face.navigation
+package fd.firad.face.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
-import fd.firad.face.screens.DashboardScreen
-import fd.firad.face.screens.DetailScreen
-import fd.firad.face.screens.LoginScreen
+import fd.firad.face.features.dashboard.presentation.DashboardScreen
+import fd.firad.face.features.detail.presentation.DetailScreen
+import fd.firad.face.features.auth.presentation.LoginScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,4 +1,4 @@
-package fd.firad.face
+package fd.firad.face.core.util
 
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest

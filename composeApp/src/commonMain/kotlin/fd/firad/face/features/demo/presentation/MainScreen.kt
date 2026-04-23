@@ -1,4 +1,4 @@
-package fd.firad.face.screens
+package fd.firad.face.features.demo.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
-//import com.mmk.kmpnotifier.notification.NotifierManager
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.preat.peekaboo.image.picker.toImageBitmap
@@ -32,7 +31,8 @@ import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import dev.icerock.moko.permissions.gallery.GALLERY
 import dev.icerock.moko.permissions.notifications.REMOTE_NOTIFICATION
-import fd.firad.face.LocalNotifier
+import fd.firad.face.core.util.LocalNotifier
+import fd.firad.face.core.localization.LocalAppStrings
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -51,7 +51,12 @@ fun MainScreen(onNavigateToNext: () -> Unit) {
     val scope = rememberCoroutineScope()
     val client = koinInject<HttpClient>()
     val localNotifier = koinInject<LocalNotifier>()
-    var ktorResult by remember { mutableStateOf("Click to fetch") }
+    val strings = LocalAppStrings.current
+    
+    var ktorResult by remember { mutableStateOf("") }
+    if (ktorResult.isEmpty()) {
+        ktorResult = strings.clickToFetch
+    }
     var currentTime by remember { mutableStateOf("") }
     
     // MOKO Permissions
@@ -78,25 +83,25 @@ fun MainScreen(onNavigateToNext: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("KMP Stack Demo", style = MaterialTheme.typography.headlineMedium)
+        Text(strings.kmpStackDemo, style = MaterialTheme.typography.headlineMedium)
 
         // Kotlinx DateTime
         Button(onClick = {
             val now = Clock.System.now()
             currentTime = now.toLocalDateTime(TimeZone.currentSystemDefault()).toString()
         }) {
-            Text("Show Current Time (DateTime)")
+            Text(strings.showCurrentTime)
         }
         if (currentTime.isNotEmpty()) {
-            Text("Time: $currentTime")
+            Text("${strings.timeLabel}$currentTime")
         }
 
-        Divider()
+        HorizontalDivider()
 
         // Ktor & Serialization
         Button(onClick = {
             scope.launch {
-                ktorResult = "Fetching..."
+                ktorResult = strings.fetching
                 try {
                     val post = client.get("https://jsonplaceholder.typicode.com/posts/1").body<Post>()
                     ktorResult = "Title: ${post.title}"
@@ -105,36 +110,37 @@ fun MainScreen(onNavigateToNext: () -> Unit) {
                 }
             }
         }) {
-            Text("Fetch from Ktor (Serialization)")
+            Text(strings.fetchFromKtor)
         }
         Text(ktorResult)
 
-        Divider()
+        HorizontalDivider()
 
         // MOKO Permissions
         Button(onClick = {
             scope.launch {
                 try {
-                    ktorResult = "Requesting Camera..."
+                    ktorResult = strings.requestingCamera
                     controller.providePermission(Permission.CAMERA)
-                    ktorResult = "Camera Granted. Requesting Gallery..."
+                    ktorResult = strings.cameraGranted
                     controller.providePermission(Permission.GALLERY)
-                    ktorResult = "Gallery Granted. Requesting Notifications..."
+                    ktorResult = strings.galleryGranted
+                    ktorResult = strings.requestingNotifications
                     controller.providePermission(Permission.REMOTE_NOTIFICATION)
-                    ktorResult = "All Permissions Granted!"
+                    ktorResult = strings.allPermissionsGranted
                 } catch (e: Exception) {
                     ktorResult = "Permission Error: ${e.message}"
                 }
             }
         }) {
-            Text("Request Permissions (Camera, Gallery, Notification)")
+            Text(strings.requestPermissions)
         }
 
         // Image Picker
         Button(onClick = {
             singleImagePicker.launch()
         }) {
-            Text("Pick Image from Gallery")
+            Text(strings.pickImage)
         }
         selectedImage?.let {
             Image(
@@ -144,7 +150,7 @@ fun MainScreen(onNavigateToNext: () -> Unit) {
             )
         }
 
-        Divider()
+        HorizontalDivider()
 
         // Local Notification (Firebase-free)
         Button(onClick = {
@@ -157,14 +163,14 @@ fun MainScreen(onNavigateToNext: () -> Unit) {
                 }
             }
         }) {
-            Text("Send Local Notification")
+            Text(strings.sendLocalNotification)
         }
 
-        Divider()
+        HorizontalDivider()
 
         // Navigation
         Button(onClick = onNavigateToNext) {
-            Text("Go to Next Screen (Navigation)")
+            Text(strings.goToNextScreen)
         }
     }
 }

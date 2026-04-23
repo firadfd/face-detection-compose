@@ -1,4 +1,4 @@
-package fd.firad.face.ui.theme
+package fd.firad.face.core.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package fd.firad.face.ui.theme
+package fd.firad.face.core.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
@@ -6,8 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import fd.firad.face.core.localization.ArStrings
+import fd.firad.face.core.localization.BnStrings
+import fd.firad.face.core.localization.EnStrings
+import fd.firad.face.core.localization.LocalAppStrings
 import org.koin.compose.koinInject
 
 enum class AppThemeMode {

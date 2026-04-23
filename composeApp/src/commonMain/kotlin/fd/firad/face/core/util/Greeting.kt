@@ -1,4 +1,4 @@
-package fd.firad.face
+package fd.firad.face.core.util
 
 class Greeting {
     private val platform = getPlatform()
