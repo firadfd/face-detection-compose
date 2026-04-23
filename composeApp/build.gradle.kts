@@ -75,6 +75,11 @@ kotlin {
             // Settings
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.coroutines)
+
+            // Adaptive Layouts
+            implementation(libs.compose.material3.adaptive)
+            implementation(libs.compose.material3.adaptive.navigation.suite)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

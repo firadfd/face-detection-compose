@@ -5,9 +5,9 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.tooling.preview.Preview
-import fd.firad.face.navigation.NavGraph
-import fd.firad.face.navigation.Route
-import fd.firad.face.ui.theme.AppTheme
+import fd.firad.face.core.navigation.NavGraph
+import fd.firad.face.core.navigation.Route
+import fd.firad.face.core.theme.AppTheme
 import kotlinx.serialization.json.Json
 
 @Composable

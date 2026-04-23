@@ -1,4 +1,4 @@
-package fd.firad.face.screens
+package fd.firad.face.features.dashboard.presentation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -6,19 +6,23 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import fd.firad.face.ui.theme.*
+import fd.firad.face.core.localization.*
+import fd.firad.face.core.theme.*
+import fd.firad.face.core.util.*
+import fd.firad.face.features.demo.presentation.MainScreen
 import org.koin.compose.koinInject
 
-sealed class Tab(val title: String, val icon: ImageVector) {
-    data object Home : Tab("Home", Icons.Default.Home)
-    data object Demo : Tab("Demo", Icons.Default.Settings)
-    data object Profile : Tab("Profile", Icons.Default.Person)
+sealed class Tab(val icon: ImageVector, val title: (AppStrings) -> String) {
+    data object Home : Tab(Icons.Default.Home, { it.home })
+    data object Demo : Tab(Icons.Default.Settings, { it.demo })
+    data object Profile : Tab(Icons.Default.Person, { it.profile })
 }
 
 @Composable
@@ -26,22 +30,21 @@ fun DashboardScreen(onNavigateToDetail: () -> Unit) {
     val tabs = listOf(Tab.Home, Tab.Demo, Tab.Profile)
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     val selectedTab = tabs[selectedTabIndex]
+    val strings = LocalAppStrings.current
 
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
-                tabs.forEachIndexed { index, tab ->
-                    NavigationBarItem(
-                        icon = { Icon(tab.icon, contentDescription = tab.title) },
-                        label = { Text(tab.title) },
-                        selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index }
-                    )
-                }
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            tabs.forEachIndexed { index, tab ->
+                item(
+                    icon = { Icon(tab.icon, contentDescription = tab.title(strings)) },
+                    label = { Text(tab.title(strings)) },
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index }
+                )
             }
         }
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             when (selectedTab) {
                 Tab.Home -> WelcomeContent()
                 Tab.Demo -> MainScreen(onNavigateToNext = onNavigateToDetail)
@@ -53,14 +56,37 @@ fun DashboardScreen(onNavigateToDetail: () -> Unit) {
 
 @Composable
 fun WelcomeContent() {
+    val windowSize = rememberWindowSizeClass()
     val strings = LocalAppStrings.current
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(strings.welcome, style = MaterialTheme.typography.headlineLarge)
-        Text(strings.loginContinue)
+    
+    if (windowSize.isExpanded || windowSize.isMedium) {
+        // Large screen layout: Side-by-side
+        Row(
+            modifier = Modifier.fillMaxSize().padding(32.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(horizontalAlignment = Alignment.Start) {
+                Text(strings.welcome, style = MaterialTheme.typography.displayMedium)
+                Text(strings.loginContinue, style = MaterialTheme.typography.headlineSmall)
+            }
+            Spacer(modifier = Modifier.width(64.dp))
+            Card(modifier = Modifier.size(300.dp)) {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                    Text("Adaptive Illustration", style = MaterialTheme.typography.labelLarge)
+                }
+            }
+        }
+    } else {
+        // Mobile layout: Stacked
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(strings.welcome, style = MaterialTheme.typography.headlineLarge)
+            Text(strings.loginContinue)
+        }
     }
 }
 

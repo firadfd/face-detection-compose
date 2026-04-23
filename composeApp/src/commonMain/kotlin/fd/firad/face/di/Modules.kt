@@ -7,7 +7,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
-import fd.firad.face.ui.theme.ThemeViewModel
+import fd.firad.face.core.theme.ThemeViewModel
 
 val networkModule = module {
     single {

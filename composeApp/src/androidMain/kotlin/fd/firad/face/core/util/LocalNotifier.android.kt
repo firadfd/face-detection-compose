@@ -1,4 +1,4 @@
-package fd.firad.face
+package fd.firad.face.core.util
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

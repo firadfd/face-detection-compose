@@ -1,4 +1,4 @@
-package fd.firad.face
+package fd.firad.face.core.util
 
 import fd.firad.face.di.sharedModule
 import org.koin.core.context.startKoin

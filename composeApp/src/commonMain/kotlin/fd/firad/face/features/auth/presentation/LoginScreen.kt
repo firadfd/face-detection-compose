@@ -1,4 +1,4 @@
-package fd.firad.face.screens
+package fd.firad.face.features.auth.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,11 +13,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fd.firad.face.core.localization.LocalAppStrings
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val strings = LocalAppStrings.current
 
     Box(
         modifier = Modifier
@@ -47,14 +49,14 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "Welcome Back",
+                    text = strings.welcome,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF6200EE)
                 )
                 
                 Text(
-                    text = "Login to continue",
+                    text = strings.loginContinue,
                     fontSize = 14.sp,
                     color = Color.Gray
                 )
@@ -64,7 +66,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 OutlinedTextField(
                     value = username,
                     onValueChange = { username = it },
-                    label = { Text("Username") },
+                    label = { Text(strings.username) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp)
                 )
@@ -72,7 +74,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text("Password") },
+                    label = { Text(strings.password) },
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp)
@@ -88,7 +90,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE))
                 ) {
-                    Text("Login", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(strings.login, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

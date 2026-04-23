@@ -1,5 +1,7 @@
 package fd.firad.face
 
+import fd.firad.face.core.util.initKoin
+
 //import com.mmk.kmpnotifier.notification.NotifierManager
 //import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 
