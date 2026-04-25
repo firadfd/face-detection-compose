@@ -1,4 +1,4 @@
-package fd.firad.face.features.employees.domain.entity
+package fd.firad.face.feature.home.domain.entity
 
 data class Employee(
     val employeeId: String,

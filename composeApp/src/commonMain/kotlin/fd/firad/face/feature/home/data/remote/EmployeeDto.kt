@@ -1,4 +1,4 @@
-package fd.firad.face.features.employees.data.remote
+package fd.firad.face.feature.home.data.remote
 
 import kotlinx.serialization.Serializable
 

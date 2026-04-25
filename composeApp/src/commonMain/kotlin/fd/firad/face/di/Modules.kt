@@ -5,10 +5,10 @@ import fd.firad.face.core.network.NetworkCaller
 import fd.firad.face.core.network.NetworkErrorHandler
 import fd.firad.face.core.storage.StorageService
 import fd.firad.face.core.theme.ThemeViewModel
-import fd.firad.face.features.employees.data.repository.EmployeeRepositoryImpl
-import fd.firad.face.features.employees.domain.repository.EmployeeRepository
-import fd.firad.face.features.employees.domain.usecase.GetEmployeesUseCase
-import fd.firad.face.features.employees.presentation.EmployeesViewModel
+import fd.firad.face.feature.home.data.repository.EmployeeRepositoryImpl
+import fd.firad.face.feature.home.domain.repository.EmployeeRepository
+import fd.firad.face.feature.home.domain.usecase.GetEmployeesUseCase
+import fd.firad.face.feature.home.presentation.EmployeesViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation

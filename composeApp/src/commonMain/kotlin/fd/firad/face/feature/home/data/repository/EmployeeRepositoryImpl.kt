@@ -1,11 +1,11 @@
-package fd.firad.face.features.employees.data.repository
+package fd.firad.face.feature.home.data.repository
 
 import fd.firad.face.core.network.ApiEndpoints
 import fd.firad.face.core.network.NetworkCaller
 import fd.firad.face.core.network.ResponseData
-import fd.firad.face.features.employees.data.remote.EmployeeListResponse
-import fd.firad.face.features.employees.domain.entity.Employee
-import fd.firad.face.features.employees.domain.repository.EmployeeRepository
+import fd.firad.face.feature.home.data.remote.EmployeeListResponse
+import fd.firad.face.feature.home.domain.entity.Employee
+import fd.firad.face.feature.home.domain.repository.EmployeeRepository
 
 class EmployeeRepositoryImpl(
     private val networkCaller: NetworkCaller

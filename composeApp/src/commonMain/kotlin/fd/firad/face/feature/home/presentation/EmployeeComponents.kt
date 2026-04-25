@@ -1,4 +1,4 @@
-package fd.firad.face.features.employees.presentation
+package fd.firad.face.feature.home.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fd.firad.face.core.ui.components.shimmer
 import fd.firad.face.core.ui.components.SkeletonBox
-import fd.firad.face.features.employees.domain.entity.Employee
+import fd.firad.face.feature.home.domain.entity.Employee
 import fd.firad.face.core.ui.components.AppText
 
 @Composable

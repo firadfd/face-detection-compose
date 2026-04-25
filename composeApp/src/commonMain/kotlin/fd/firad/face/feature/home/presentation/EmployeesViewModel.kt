@@ -1,10 +1,10 @@
-package fd.firad.face.features.employees.presentation
+package fd.firad.face.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import fd.firad.face.core.network.ResponseData
-import fd.firad.face.features.employees.domain.entity.Employee
-import fd.firad.face.features.employees.domain.usecase.GetEmployeesUseCase
+import fd.firad.face.feature.home.domain.entity.Employee
+import fd.firad.face.feature.home.domain.usecase.GetEmployeesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

@@ -4,15 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
-import fd.firad.face.features.dashboard.presentation.DashboardScreen
-import fd.firad.face.features.detail.presentation.DetailScreen
-import fd.firad.face.features.auth.presentation.LoginScreen
+import fd.firad.face.feature.main.presentation.MainScreen
+import fd.firad.face.feature.detail.presentation.DetailScreen
+import fd.firad.face.feature.auth.presentation.LoginScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface Route {
     @Serializable data object Login : Route
-    @Serializable data object Dashboard : Route
+    @Serializable data object Main : Route
     @Serializable data object Detail : Route
 }
 
@@ -28,11 +28,11 @@ fun NavGraph(
             Route.Login -> NavEntry(route) {
                 LoginScreen(onLoginSuccess = {
                     backStack.clear()
-                    backStack.add(Route.Dashboard)
+                    backStack.add(Route.Main)
                 })
             }
-            Route.Dashboard -> NavEntry(route) {
-                DashboardScreen(onNavigateToDetail = {
+            Route.Main -> NavEntry(route) {
+                MainScreen(onNavigateToDetail = {
                     backStack.add(Route.Detail)
                 })
             }
