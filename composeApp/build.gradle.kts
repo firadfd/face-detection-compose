@@ -81,6 +81,12 @@ kotlin {
             implementation(libs.compose.material3.adaptive)
             implementation(libs.compose.material3.adaptive.navigation.suite)
 
+            // KTensorFlow
+            implementation(libs.ktensorflow.core)
+            implementation(libs.ktensorflow.tensor)
+            implementation(libs.ktensorflow.compose)
+            implementation(libs.ktensorflow.pipeline)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

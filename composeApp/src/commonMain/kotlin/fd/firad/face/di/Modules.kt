@@ -66,6 +66,16 @@ val appModule = module {
     single<EmployeeRepository> { EmployeeRepositoryImpl(get()) }
     single { GetEmployeesUseCase(get()) }
     viewModel { EmployeesViewModel(get()) }
+
+    // Demo Feature
+    single<fd.firad.face.feature.demo.domain.repository.DemoRepository> { fd.firad.face.feature.demo.data.repository.DemoRepositoryImpl(get()) }
+    single { fd.firad.face.feature.demo.domain.usecase.GetDemoPostUseCase(get()) }
+    viewModel { fd.firad.face.feature.demo.presentation.DemoViewModel(get()) }
+
+    // Face Verify Feature
+    single<fd.firad.face.feature.verify.domain.repository.VerifyRepository> { fd.firad.face.feature.verify.data.repository.VerifyRepositoryImpl() }
+    single { fd.firad.face.feature.verify.domain.usecase.CalculateSimilarityUseCase(get()) }
+    viewModel { fd.firad.face.feature.verify.presentation.FaceVerifyViewModel(get()) }
 }
 
 expect val platformModule: org.koin.core.module.Module

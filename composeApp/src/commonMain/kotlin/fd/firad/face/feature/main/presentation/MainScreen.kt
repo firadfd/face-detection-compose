@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
@@ -23,10 +24,12 @@ import fd.firad.face.core.localization.LocalAppStrings
 import fd.firad.face.core.ui.components.AppText
 import fd.firad.face.feature.demo.presentation.DemoScreen
 import fd.firad.face.feature.home.presentation.HomeScreen
+import fd.firad.face.feature.verify.presentation.FaceVerifyScreen
 import fd.firad.face.feature.profile.presentation.ProfileScreen
 
 sealed class Tab(val icon: ImageVector, val title: (AppStrings) -> String) {
     data object Home : Tab(Icons.Default.Home, { it.home })
+    data object FaceVerify : Tab(Icons.Default.Face, { it.faceVerify })
     data object Demo : Tab(Icons.Default.Settings, { it.demo })
     data object Profile : Tab(Icons.Default.Person, { it.profile })
 }
@@ -34,7 +37,7 @@ sealed class Tab(val icon: ImageVector, val title: (AppStrings) -> String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onNavigateToDetail: () -> Unit) {
-    val tabs = listOf(Tab.Home, Tab.Demo, Tab.Profile)
+    val tabs = listOf(Tab.Home, Tab.FaceVerify, Tab.Demo, Tab.Profile)
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     val selectedTab = tabs[selectedTabIndex]
     val strings = LocalAppStrings.current
@@ -78,6 +81,7 @@ fun MainScreen(onNavigateToDetail: () -> Unit) {
             ) {
                 when (selectedTab) {
                     Tab.Home -> HomeScreen()
+                    Tab.FaceVerify -> FaceVerifyScreen()
                     Tab.Demo -> DemoScreen(onNavigateToNext = onNavigateToDetail)
                     Tab.Profile -> ProfileScreen()
                 }

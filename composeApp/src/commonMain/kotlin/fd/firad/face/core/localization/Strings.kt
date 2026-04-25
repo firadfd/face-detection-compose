@@ -34,6 +34,7 @@ interface AppStrings {
     val allPermissionsGranted: String
     val detailScreen: String
     val back: String
+    val faceVerify: String
 }
 
 object EnStrings : AppStrings {
@@ -68,6 +69,7 @@ object EnStrings : AppStrings {
     override val allPermissionsGranted = "All Permissions Granted!"
     override val detailScreen = "Detail Screen"
     override val back = "Back"
+    override val faceVerify = "Face Verify"
 }
 
 object BnStrings : AppStrings {
@@ -102,6 +104,7 @@ object BnStrings : AppStrings {
     override val allPermissionsGranted = "সব অনুমতি মঞ্জুর হয়েছে!"
     override val detailScreen = "বিস্তারিত স্ক্রিন"
     override val back = "ফিরে যান"
+    override val faceVerify = "ফেস ভেরিফাই"
 }
 
 object ArStrings : AppStrings {
@@ -136,6 +139,7 @@ object ArStrings : AppStrings {
     override val allPermissionsGranted = "تمت الموافقة على جميع الأذونات!"
     override val detailScreen = "شاشة التفاصيل"
     override val back = "رجوع"
+    override val faceVerify = "التحقق من الوجه"
 }
 
 val LocalAppStrings = compositionLocalOf<AppStrings> { EnStrings }

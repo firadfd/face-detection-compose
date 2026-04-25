@@ -9,17 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -37,45 +34,33 @@ import fd.firad.face.core.util.LocalNotifier
 import fd.firad.face.core.localization.LocalAppStrings
 import fd.firad.face.core.ui.components.AppButton
 import fd.firad.face.core.ui.components.AppText
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.koinInject
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.serialization.Serializable
-import org.koin.compose.koinInject
 import kotlin.time.Clock
-
-@Serializable
-data class Post(val userId: Int, val id: Int, val title: String, val body: String)
 
 @Composable
 fun DemoScreen(onNavigateToNext: () -> Unit) {
+    val viewModel = koinViewModel<DemoViewModel>()
+    val uiState by viewModel.uiState.collectAsState()
+    
     val scope = rememberCoroutineScope()
-    val client = koinInject<HttpClient>()
     val localNotifier = koinInject<LocalNotifier>()
     val strings = LocalAppStrings.current
-    
-    var ktorResult by remember { mutableStateOf("") }
-    if (ktorResult.isEmpty()) {
-        ktorResult = strings.clickToFetch
-    }
-    var currentTime by remember { mutableStateOf("") }
-    var isFetching by remember { mutableStateOf(false) }
     
     // MOKO Permissions
     val factory = rememberPermissionsControllerFactory()
     val controller = remember(factory) { factory.createPermissionsController() }
     BindEffect(controller)
 
-    var selectedImage by remember { mutableStateOf<ImageBitmap?>(null) }
     val singleImagePicker = rememberImagePickerLauncher(
         selectionMode = SelectionMode.Single,
         scope = scope,
         onResult = { byteArrays: List<ByteArray> ->
             byteArrays.firstOrNull()?.let {
-                selectedImage = it.toImageBitmap()
+                viewModel.updateSelectedImage(it.toImageBitmap())
             }
         }
     )
@@ -99,35 +84,25 @@ fun DemoScreen(onNavigateToNext: () -> Unit) {
                 text = strings.showCurrentTime,
                 onClick = {
                     val now = Clock.System.now()
-                    currentTime = now.toLocalDateTime(TimeZone.currentSystemDefault()).toString()
+                    val timeString = now.toLocalDateTime(TimeZone.currentSystemDefault()).toString()
+                    viewModel.updateTime(timeString)
                 }
             )
-            if (currentTime.isNotEmpty()) {
-                AppText("${strings.timeLabel}$currentTime")
+            if (uiState.currentTime.isNotEmpty()) {
+                AppText("${strings.timeLabel}${uiState.currentTime}")
             }
 
             HorizontalDivider()
 
             // Ktor & Serialization
             AppButton(
-                text = if (isFetching) strings.fetching else strings.fetchFromKtor,
-                isLoading = isFetching,
+                text = if (uiState.isFetching) strings.fetching else strings.fetchFromKtor,
+                isLoading = uiState.isFetching,
                 onClick = {
-                    scope.launch {
-                        isFetching = true
-                        ktorResult = strings.fetching
-                        try {
-                            val post = client.get("https://jsonplaceholder.typicode.com/posts/1").body<Post>()
-                            ktorResult = "Title: ${post.title}"
-                        } catch (e: Exception) {
-                            ktorResult = "Error: ${e.message}"
-                        } finally {
-                            isFetching = false
-                        }
-                    }
+                    viewModel.fetchPost(1)
                 }
             )
-            AppText(ktorResult)
+            AppText(uiState.postResult.ifEmpty { strings.clickToFetch })
 
             HorizontalDivider()
 
@@ -137,20 +112,23 @@ fun DemoScreen(onNavigateToNext: () -> Unit) {
                 onClick = {
                     scope.launch {
                         try {
-                            ktorResult = strings.requestingCamera
+                            viewModel.updatePermissionStatus(strings.requestingCamera)
                             controller.providePermission(Permission.CAMERA)
-                            ktorResult = strings.cameraGranted
+                            viewModel.updatePermissionStatus(strings.cameraGranted)
                             controller.providePermission(Permission.GALLERY)
-                            ktorResult = strings.galleryGranted
-                            ktorResult = strings.requestingNotifications
+                            viewModel.updatePermissionStatus(strings.galleryGranted)
+                            viewModel.updatePermissionStatus(strings.requestingNotifications)
                             controller.providePermission(Permission.REMOTE_NOTIFICATION)
-                            ktorResult = strings.allPermissionsGranted
+                            viewModel.updatePermissionStatus(strings.allPermissionsGranted)
                         } catch (e: Exception) {
-                            ktorResult = "Permission Error: ${e.message}"
+                            viewModel.updatePermissionStatus("Permission Error: ${e.message}")
                         }
                     }
                 }
             )
+            if (uiState.permissionStatus.isNotEmpty()) {
+                AppText(uiState.permissionStatus)
+            }
 
             // Image Picker
             AppButton(
@@ -159,7 +137,7 @@ fun DemoScreen(onNavigateToNext: () -> Unit) {
                     singleImagePicker.launch()
                 }
             )
-            selectedImage?.let {
+            uiState.selectedImage?.let {
                 Image(
                     bitmap = it,
                     contentDescription = "Selected Image",
