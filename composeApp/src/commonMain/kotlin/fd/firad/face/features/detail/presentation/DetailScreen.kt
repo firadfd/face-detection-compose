@@ -8,6 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fd.firad.face.core.localization.LocalAppStrings
 
+import fd.firad.face.core.ui.components.AppButton
+import fd.firad.face.core.ui.components.AppText
+
 @Composable
 fun DetailScreen(onBack: () -> Unit) {
     val strings = LocalAppStrings.current
@@ -16,10 +19,11 @@ fun DetailScreen(onBack: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(strings.detailScreen, style = MaterialTheme.typography.headlineMedium)
+        AppText(strings.detailScreen, style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onBack) {
-            Text(strings.back)
-        }
+        AppButton(
+            text = strings.back,
+            onClick = onBack
+        )
     }
 }

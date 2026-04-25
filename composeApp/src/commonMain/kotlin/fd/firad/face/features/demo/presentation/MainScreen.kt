@@ -33,6 +33,8 @@ import dev.icerock.moko.permissions.gallery.GALLERY
 import dev.icerock.moko.permissions.notifications.REMOTE_NOTIFICATION
 import fd.firad.face.core.util.LocalNotifier
 import fd.firad.face.core.localization.LocalAppStrings
+import fd.firad.face.core.ui.components.AppButton
+import fd.firad.face.core.ui.components.AppText
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -46,6 +48,8 @@ import kotlin.time.Clock
 @Serializable
 data class Post(val userId: Int, val id: Int, val title: String, val body: String)
 
+
+
 @Composable
 fun MainScreen(onNavigateToNext: () -> Unit) {
     val scope = rememberCoroutineScope()
@@ -58,6 +62,7 @@ fun MainScreen(onNavigateToNext: () -> Unit) {
         ktorResult = strings.clickToFetch
     }
     var currentTime by remember { mutableStateOf("") }
+    var isFetching by remember { mutableStateOf(false) }
     
     // MOKO Permissions
     val factory = rememberPermissionsControllerFactory()
@@ -83,65 +88,73 @@ fun MainScreen(onNavigateToNext: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(strings.kmpStackDemo, style = MaterialTheme.typography.headlineMedium)
+        AppText(strings.kmpStackDemo, style = MaterialTheme.typography.headlineMedium)
 
         // Kotlinx DateTime
-        Button(onClick = {
-            val now = Clock.System.now()
-            currentTime = now.toLocalDateTime(TimeZone.currentSystemDefault()).toString()
-        }) {
-            Text(strings.showCurrentTime)
-        }
+        AppButton(
+            text = strings.showCurrentTime,
+            onClick = {
+                val now = Clock.System.now()
+                currentTime = now.toLocalDateTime(TimeZone.currentSystemDefault()).toString()
+            }
+        )
         if (currentTime.isNotEmpty()) {
-            Text("${strings.timeLabel}$currentTime")
+            AppText("${strings.timeLabel}$currentTime")
         }
 
         HorizontalDivider()
 
         // Ktor & Serialization
-        Button(onClick = {
-            scope.launch {
-                ktorResult = strings.fetching
-                try {
-                    val post = client.get("https://jsonplaceholder.typicode.com/posts/1").body<Post>()
-                    ktorResult = "Title: ${post.title}"
-                } catch (e: Exception) {
-                    ktorResult = "Error: ${e.message}"
+        AppButton(
+            text = if (isFetching) strings.fetching else strings.fetchFromKtor,
+            isLoading = isFetching,
+            onClick = {
+                scope.launch {
+                    isFetching = true
+                    ktorResult = strings.fetching
+                    try {
+                        val post = client.get("https://jsonplaceholder.typicode.com/posts/1").body<Post>()
+                        ktorResult = "Title: ${post.title}"
+                    } catch (e: Exception) {
+                        ktorResult = "Error: ${e.message}"
+                    } finally {
+                        isFetching = false
+                    }
                 }
             }
-        }) {
-            Text(strings.fetchFromKtor)
-        }
-        Text(ktorResult)
+        )
+        AppText(ktorResult)
 
         HorizontalDivider()
 
         // MOKO Permissions
-        Button(onClick = {
-            scope.launch {
-                try {
-                    ktorResult = strings.requestingCamera
-                    controller.providePermission(Permission.CAMERA)
-                    ktorResult = strings.cameraGranted
-                    controller.providePermission(Permission.GALLERY)
-                    ktorResult = strings.galleryGranted
-                    ktorResult = strings.requestingNotifications
-                    controller.providePermission(Permission.REMOTE_NOTIFICATION)
-                    ktorResult = strings.allPermissionsGranted
-                } catch (e: Exception) {
-                    ktorResult = "Permission Error: ${e.message}"
+        AppButton(
+            text = strings.requestPermissions,
+            onClick = {
+                scope.launch {
+                    try {
+                        ktorResult = strings.requestingCamera
+                        controller.providePermission(Permission.CAMERA)
+                        ktorResult = strings.cameraGranted
+                        controller.providePermission(Permission.GALLERY)
+                        ktorResult = strings.galleryGranted
+                        ktorResult = strings.requestingNotifications
+                        controller.providePermission(Permission.REMOTE_NOTIFICATION)
+                        ktorResult = strings.allPermissionsGranted
+                    } catch (e: Exception) {
+                        ktorResult = "Permission Error: ${e.message}"
+                    }
                 }
             }
-        }) {
-            Text(strings.requestPermissions)
-        }
+        )
 
         // Image Picker
-        Button(onClick = {
-            singleImagePicker.launch()
-        }) {
-            Text(strings.pickImage)
-        }
+        AppButton(
+            text = strings.pickImage,
+            onClick = {
+                singleImagePicker.launch()
+            }
+        )
         selectedImage?.let {
             Image(
                 bitmap = it,
@@ -153,24 +166,26 @@ fun MainScreen(onNavigateToNext: () -> Unit) {
         HorizontalDivider()
 
         // Local Notification (Firebase-free)
-        Button(onClick = {
-            scope.launch {
-                try {
-                    controller.providePermission(Permission.REMOTE_NOTIFICATION)
-                    localNotifier.notify("Face Detection", "This is a local notification without Firebase!")
-                } catch (e: Exception) {
-                    println("Permission Error: ${e.message}")
+        AppButton(
+            text = strings.sendLocalNotification,
+            onClick = {
+                scope.launch {
+                    try {
+                        controller.providePermission(Permission.REMOTE_NOTIFICATION)
+                        localNotifier.notify("Face Detection", "This is a local notification without Firebase!")
+                    } catch (e: Exception) {
+                        println("Permission Error: ${e.message}")
+                    }
                 }
             }
-        }) {
-            Text(strings.sendLocalNotification)
-        }
+        )
 
         HorizontalDivider()
 
         // Navigation
-        Button(onClick = onNavigateToNext) {
-            Text(strings.goToNextScreen)
-        }
+        AppButton(
+            text = strings.goToNextScreen,
+            onClick = onNavigateToNext
+        )
     }
 }
