@@ -1,12 +1,7 @@
 package fd.firad.face.feature.verify.data.repository
 
-import dev.kursor.ktensorflow.Interpreter
-import dev.kursor.ktensorflow.InterpreterOptions
-import dev.kursor.ktensorflow.ModelDesc
-import dev.kursor.ktensorflow.compose.ComposeUri
-import dev.kursor.ktensorflow.tensor.Tensor
-import dev.kursor.ktensorflow.tensor.run
-import dev.kursor.ktensorflow.tensor.toArray
+import org.kmp.playground.kflite.Kflite
+import org.kmp.playground.kflite.InterpreterOptions
 import fd.firad.face.core.util.toAppImage
 import fd.firad.face.core.util.resize
 import fd.firad.face.core.util.toNormalizedFloatArray
@@ -18,33 +13,35 @@ import facedetection.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 class VerifyRepositoryImpl : VerifyRepository {
-    private var interpreter: Interpreter? = null
+    private var isInitialized = false
 
     @OptIn(ExperimentalResourceApi::class)
-    private suspend fun getInterpreter(): Interpreter {
-        return withContext(Dispatchers.Default) {
-            if (interpreter == null) {
-                val modelUri = Res.getUri("files/mobilefacenet.tflite")
-                val modelDesc = ModelDesc.ComposeUri(modelUri)
-                interpreter = Interpreter(
-                    modelDesc,
-                    options = InterpreterOptions()
-                )
-            }
-            interpreter!!
+    private suspend fun initializeInterpreter() {
+        if (!isInitialized) {
+            val modelBytes = Res.readBytes("files/mobilefacenet.tflite")
+            Kflite.init(
+                model = modelBytes,
+                options = InterpreterOptions()
+            )
+            isInitialized = true
         }
     }
 
     override suspend fun calculateSimilarity(image1: ByteArray, image2: ByteArray): Float {
-        val interpreter = getInterpreter()
+        initializeInterpreter()
         
-        val embedding1 = runInference(interpreter, image1) ?: return 0f
-        val embedding2 = runInference(interpreter, image2) ?: return 0f
+        val embedding1 = getEmbedding(image1) ?: return 0f
+        val embedding2 = getEmbedding(image2) ?: return 0f
         
-        return cosineSimilarity(embedding1, embedding2)
+        return compareEmbeddings(embedding1, embedding2)
     }
 
-    private suspend fun runInference(interpreter: Interpreter, imageBytes: ByteArray): FloatArray? {
+    override suspend fun getEmbedding(image: ByteArray): FloatArray? {
+        initializeInterpreter()
+        return runInference(image)
+    }
+
+    private suspend fun runInference(imageBytes: ByteArray): FloatArray? {
         return withContext(Dispatchers.Default) {
             val appImage = imageBytes.toAppImage() ?: return@withContext null
             val resizedImage = appImage.resize(112, 112)
@@ -61,18 +58,18 @@ class VerifyRepositoryImpl : VerifyRepository {
                 }
             }
             
-            val inputTensor = Tensor<Float>(inputData)
             val outputData = Array(1) { FloatArray(192) }
-            val outputTensor = Tensor<Float>(outputData)
             
-            interpreter.run(inputTensor, outputTensor)
+            Kflite.run(
+                inputs = listOf(inputData),
+                outputs = mapOf(0 to outputData)
+            )
             
-            val result = outputTensor.toArray<Array<FloatArray>>()
-            result[0]
+            outputData[0]
         }
     }
 
-    private fun cosineSimilarity(v1: FloatArray, v2: FloatArray): Float {
+    override fun compareEmbeddings(v1: FloatArray, v2: FloatArray): Float {
         var dotProduct = 0.0f
         var norm1 = 0.0f
         var norm2 = 0.0f

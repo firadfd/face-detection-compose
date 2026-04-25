@@ -75,7 +75,9 @@ val appModule = module {
     // Face Verify Feature
     single<fd.firad.face.feature.verify.domain.repository.VerifyRepository> { fd.firad.face.feature.verify.data.repository.VerifyRepositoryImpl() }
     single { fd.firad.face.feature.verify.domain.usecase.CalculateSimilarityUseCase(get()) }
+    single { fd.firad.face.feature.verify.domain.usecase.GetEmbeddingUseCase(get()) }
     viewModel { fd.firad.face.feature.verify.presentation.FaceVerifyViewModel(get()) }
+    viewModel { fd.firad.face.feature.liveverify.presentation.LiveVerifyViewModel(get(), get(), get()) }
 }
 
 expect val platformModule: org.koin.core.module.Module

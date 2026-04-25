@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -72,6 +71,7 @@ kotlin {
 
             // Image Picker
             implementation(libs.peekaboo.image.picker)
+            implementation(libs.peekaboo.ui)
 
             // Settings
             implementation(libs.multiplatform.settings)
@@ -81,11 +81,8 @@ kotlin {
             implementation(libs.compose.material3.adaptive)
             implementation(libs.compose.material3.adaptive.navigation.suite)
 
-            // KTensorFlow
-            implementation(libs.ktensorflow.core)
-            implementation(libs.ktensorflow.tensor)
-            implementation(libs.ktensorflow.compose)
-            implementation(libs.ktensorflow.pipeline)
+            // KFlite
+            implementation(libs.kflite)
 
         }
         commonTest.dependencies {
@@ -112,6 +109,9 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+        jniLibs {
+            useLegacyPackaging = false
         }
     }
     buildTypes {

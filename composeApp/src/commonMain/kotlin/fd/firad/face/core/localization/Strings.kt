@@ -35,6 +35,7 @@ interface AppStrings {
     val detailScreen: String
     val back: String
     val faceVerify: String
+    val liveVerify: String
 }
 
 object EnStrings : AppStrings {
@@ -70,6 +71,7 @@ object EnStrings : AppStrings {
     override val detailScreen = "Detail Screen"
     override val back = "Back"
     override val faceVerify = "Face Verify"
+    override val liveVerify = "Live Verify"
 }
 
 object BnStrings : AppStrings {
@@ -105,6 +107,7 @@ object BnStrings : AppStrings {
     override val detailScreen = "বিস্তারিত স্ক্রিন"
     override val back = "ফিরে যান"
     override val faceVerify = "ফেস ভেরিফাই"
+    override val liveVerify = "লাইভ ভেরিফাই"
 }
 
 object ArStrings : AppStrings {
@@ -140,6 +143,7 @@ object ArStrings : AppStrings {
     override val detailScreen = "شاشة التفاصيل"
     override val back = "رجوع"
     override val faceVerify = "التحقق من الوجه"
+    override val liveVerify = "التحقق المباشر"
 }
 
 val LocalAppStrings = compositionLocalOf<AppStrings> { EnStrings }
